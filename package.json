@@ -1,0 +1,20 @@
+{
+  "name": "mocha-electron",
+  "version": "1.0.0",
+  "description": "mocha testing in electron",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "start": "electron main.js"
+  },
+  "keywords": [
+    "mocha",
+    "test",
+    "electron"
+  ],
+  "author": "Tim Scanlin",
+  "license": "ISC",
+  "devDependencies": {
+    "electron-prebuilt": "^0.36.2"
+  }
+}
