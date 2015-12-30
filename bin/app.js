@@ -4,7 +4,7 @@ var program = require('commander');
 
 // Handle command line usage.
 program
-  .version('1.0.2')
+  .version('1.0.4')
   .usage('[options] <url>')
   .option('-w, --window', 'Show window', false)
   .option('-s, --silent', 'Silently swallow errors', false)
