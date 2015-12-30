@@ -2,8 +2,13 @@
 
 ## Introduction
 
-mocha-electron makes integration testing with mocha and electron easy.
+mocha-electron makes integration testing with [mocha](https://mochajs.org/) and [electron](http://electron.atom.io/) easy.
 
+Features:
+- Run tests in [electron](http://electron.atom.io/) (fast & modern!) rather than [phantomJS](http://phantomjs.org/) (old & buggy).
+- Ability to see test output in node and the electron window console.
+- Option to silently fail on errors so that tests can be run in development with file watching and not stop on an error.
+- Option to show the electron window for easier debugging or hide it and run mocha tests headlessly.
 
 ## Install
 
@@ -49,25 +54,23 @@ gulp.task('test', function() {
 });
 ```
 
-You also need to make sure you are including the mocha scripts on the page. If you have already been using mocha for browser testing then this step might already be done for you, but if you haven't an example of the HTML code required to include mocha might look like this.
+You also need to make sure you are including the mocha scripts on the page. If you have already been using mocha for browser testing then this step might already be done for you, but if you haven't, an example of the HTML code required to include mocha might look like this.
 
 ```html
-{% if TEST === true %}
-  <div id="mocha"></div>
-  <link rel="stylesheet" href="/node_modules/mocha/mocha.css">
-  <script src="/node_modules/mocha/mocha.js"></script>
-  <script src="/node_modules/chai/chai.js"></script>
+<div id="mocha"></div>
+<link rel="stylesheet" href="/node_modules/mocha/mocha.css">
+<script src="/node_modules/mocha/mocha.js"></script>
+<script src="/node_modules/chai/chai.js"></script>
 
-  <script src="/test/test.js"></script>
+<script src="/test/test.js"></script>
 
-  <script>
-    if (window.mochaElectron) {
-      mochaElectron.run();
-    } else {
-      mocha.run();
-    }
-  </script>
-{% endif %}
+<script>
+  if (window.mochaElectron) {
+    mochaElectron.run();
+  } else {
+    mocha.run();
+  }
+</script>
 ```
 
 Note the call to `mochaElectron` AFTER mocha / chai and your test.js file.
