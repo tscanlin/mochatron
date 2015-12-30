@@ -4,7 +4,7 @@
   "description": "mocha testing in electron",
   "main": "lib/main.js",
   "scripts": {
-    "start": "node lib/main.js -s"
+    "start": "node lib/main.js"
   },
   "keywords": [
     "mocha",
