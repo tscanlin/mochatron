@@ -6,6 +6,10 @@
   "scripts": {
     "start": "node lib/main.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tscanlin/mocha-electron.git"
+  },
   "keywords": [
     "mocha",
     "test",
