@@ -2,10 +2,10 @@
   "name": "mocha-electron",
   "version": "1.0.0",
   "description": "mocha testing in electron",
-  "main": "main.js",
+  "main": "lib/main.js",
   "scripts": {
     "test": "test",
-    "start": "node main.js"
+    "start": "node lib/main.js"
   },
   "keywords": [
     "mocha",
@@ -17,6 +17,7 @@
   "devDependencies": {
     "electron-prebuilt": "^0.36.2",
     "eslint": "^1.10.3",
-    "npm-execspawn": "^1.2.1"
+    "npm-execspawn": "^1.2.1",
+    "sprintf-js": "^1.0.3"
   }
 }
