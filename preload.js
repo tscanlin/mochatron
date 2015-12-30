@@ -1,53 +1,65 @@
 'use strict';
-const electron = require('electron');
-const app = electron.app;  // Module to control application life.
-const BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
+var electron = require('electron');
+// var reporter = require('./reporter');
+// var ipcRenderer = electron.ipcRenderer;
 
-// url = system.args[1],
-//   reporter = system.args[2] || 'spec',
-const preloadURL = 'file://' + __dirname + '/preload.js';
-
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
-let mainWindow;
-
-// Quit when all windows are closed.
-app.on('window-all-closed', function() {
-  // On OS X it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform != 'darwin') {
-    app.quit();
+var mochaElectron = {
+  run: function() {
+    var mocha = window.mocha;
+    mocha.setup({
+      // reporter: 'spec'
+      reporter: 'spec'
+    })
+    mocha.run();
+    // sendMsg('stdout', 'test');
   }
-});
+}
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-app.on('ready', function() {
-  // Create the browser window.
-  mainWindow = new BrowserWindow({
-    height: 1200,
-    width: 1600,
-    webPreferences: {
-      preloadURL: preloadURL,
-      nodeIntegration: false
-    }
-  });
+if (window) {
+  // window.reporter = reporter;
+  window.electron = electron;
+  window.mochaElectron = mochaElectron;
+}
 
-  // and load the index.html of the app.
-  // mainWindow.loadURL('file://' + __dirname + '/index.html');
-  mainWindow.loadURL('http://localhost:4000/index.html');
+function sendMsg(type, message) {
+  electron.ipcRenderer.send(type, message);
+}
 
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+// Taken from nightmare-js
+(function(){
+  // listen for console.log
+  var defaultLog = console.log;
+  console.log = function() {
+    electron.ipcRenderer.send('console', 'log', [].slice.call(arguments));
+    return defaultLog.apply(this, arguments);
+  };
 
-  console.log(mainWindow);
-  console.log(mainWindow.webContents);
+  // listen for console.warn
+  var defaultWarn = console.warn;
+  console.warn = function() {
+    electron.ipcRenderer.send('console', 'warn', [].slice.call(arguments));
+    return defaultWarn.apply(this, arguments);
+  };
 
-  // Emitted when the window is closed.
-  mainWindow.on('closed', function() {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    mainWindow = null;
-  });
-});
+  // listen for console.error
+  var defaultError = console.error;
+  console.error = function() {
+    electron.ipcRenderer.send('console', 'error', [].slice.call(arguments));
+    return defaultError.apply(this, arguments);
+  };
+
+  // overwrite the default alert
+  window.alert = function(message){
+    electron.ipcRenderer.send('page', 'alert', message);
+  };
+
+  // overwrite the default prompt
+  window.prompt = function(message, defaultResponse){
+    electron.ipcRenderer.send('page', 'prompt', message, defaultResponse);
+  }
+
+  // overwrite the default confirm
+  window.confirm = function(message, defaultResponse){
+    electron.ipcRenderer.send('page', 'confirm', message, defaultResponse);
+  }
+})()
