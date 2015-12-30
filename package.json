@@ -1,6 +1,6 @@
 {
   "name": "mocha-electron",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "mocha testing in electron",
   "main": "lib/main.js",
   "scripts": {
@@ -12,7 +12,7 @@
     "electron"
   ],
   "author": "Tim Scanlin",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "eslint": "^1.10.3"
   },
