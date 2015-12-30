@@ -1,13 +1,13 @@
 var spawn = require('npm-execspawn');
 var path = require('path');
 var args = process.argv.slice(2);
-var validOptions = args.some(function(arg) {
+// Determine if valid args were passed in from command line.
+var validArgs = args.some(function(arg) {
   var protocol = arg.substring(0, 4);
   return (protocol === 'file' || protocol === 'http');
 });
 
 function main(options) {
-  console.log(options, 'main')
   var config = require('./config');
   var appScript = path.join(__dirname, '/app.js');
 
@@ -27,8 +27,12 @@ function main(options) {
   return app;
 }
 
-if (validOptions) {
-  main();
+if (require.main === module) { // Called directly.
+  if (validArgs) {
+    main();
+  } else {
+    console.log('Invalid arguments passed.');
+  }
 }
 
 module.exports = main;

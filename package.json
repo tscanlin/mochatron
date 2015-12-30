@@ -1,10 +1,10 @@
 {
   "name": "mocha-electron",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "mocha testing in electron",
-  "main": "lib/main.js",
+  "main": "bin/mocha-electron.js",
   "scripts": {
-    "start": "node lib/main.js"
+    "start": "node bin/mocha-electron.js"
   },
   "repository": {
     "type": "git",
