@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var spawn = require('npm-execspawn');
 var path = require('path');
 var args = process.argv.slice(2);

@@ -12,9 +12,10 @@ Features:
 
 ## Install
 
-Install it with npm
+Install it with npm and make sure you've installed electron-prebuilt globally as well.
 
 ```sh
+npm install -g electron-prebuilt
 npm install --save-dev mocha-electron
 ```
 
