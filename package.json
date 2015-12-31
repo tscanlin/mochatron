@@ -1,10 +1,10 @@
 {
   "name": "mocha-electron",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "mocha testing in electron",
   "main": "bin/mocha-electron.js",
   "bin": {
-    "mocha-electron": "bin/mocha-electron.js"
+    "mocha-electron": "./bin/mocha-electron.js"
   },
   "scripts": {
     "start": "node bin/mocha-electron.js"
