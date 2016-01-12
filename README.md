@@ -31,9 +31,9 @@ node .\node_modules\mochatron -w http://localhost/
 ```
 
 ```javascript
-var mochaElectron = require('mochatron');
+var mochatron = require('mochatron');
 
-mochaElectron({
+mochatron({
   url: 'http://localhost/',
   silent: false,
   window: false
@@ -44,10 +44,10 @@ I haven't gotten around to making plugins for gulp or grunt yet (Contributions i
 
 ```javascript
 var gulp = require('gulp');
-var mochaElectron = require('mochatron');
+var mochatron = require('mochatron');
 
 gulp.task('test', function() {
-  mochaElectron({
+  mochatron({
     url: 'http://localhost/',
     silent: false,
     window: false
@@ -66,22 +66,22 @@ You also need to make sure you are including the mocha scripts on the page. If y
 <script src="/test/test.js"></script>
 
 <script>
-  if (window.mochaElectron) {
-    mochaElectron.run();
+  if (window.mochatron) {
+    mochatron.run();
   } else {
     mocha.run();
   }
 </script>
 ```
 
-Note the call to `mochaElectron` AFTER mocha / chai and your test.js file.
+Note the call to `mochatron` AFTER mocha / chai and your test.js file.
 
 ## API
 
-Here's an example of how to call mochaElectron with all of its default options and comments about them.
+Here's an example of how to call mochatron with all of its default options and comments about them.
 
 ```javascript
-mochaElectron({
+mochatron({
   // Url to test.
   url: 'http://localhost/',
   // Silently swallow errors.

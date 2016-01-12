@@ -4,7 +4,7 @@ var electron = require('electron');
 // Use sprintf because the browser console.log does it, but node does not.
 var sprintf = require('sprintf-js').sprintf;
 
-var mochaElectron = {
+var mochatron = {
   run: function() {
     var mocha = window.mocha;
     mocha.setup({
@@ -15,7 +15,7 @@ var mochaElectron = {
 }
 
 if (window) {
-  window.mochaElectron = mochaElectron;
+  window.mochatron = mochatron;
 }
 
 function sendMsg(type, message) {
