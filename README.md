@@ -1,8 +1,8 @@
-# mocha-electron
+# mochatron
 
 ## Introduction
 
-mocha-electron makes integration testing with [mocha](https://mochajs.org/) and [electron](http://electron.atom.io/) easy.
+mochatron makes integration testing with [mocha](https://mochajs.org/) and [electron](http://electron.atom.io/) easy.
 
 Features:
 - Run tests in [electron](http://electron.atom.io/) (fast & modern!) rather than [phantomJS](http://phantomjs.org/) (old & buggy).
@@ -16,7 +16,7 @@ Install it with npm and make sure you've installed electron-prebuilt globally as
 
 ```sh
 npm install -g electron-prebuilt
-npm install --save-dev mocha-electron
+npm install --save-dev mochatron
 ```
 
 
@@ -27,11 +27,11 @@ Use the script from the command line or node.
 > Note: by default the electron window isn't shown so that the test runs 'headless', but for debugging it can be helpful to see the window so in the config set 'window' to true or pass the '-w' argument.
 
 ```sh
-node .\node_modules\mocha-electron -w http://localhost/
+node .\node_modules\mochatron -w http://localhost/
 ```
 
 ```javascript
-var mochaElectron = require('mocha-electron');
+var mochaElectron = require('mochatron');
 
 mochaElectron({
   url: 'http://localhost/',
@@ -44,7 +44,7 @@ I haven't gotten around to making plugins for gulp or grunt yet (Contributions i
 
 ```javascript
 var gulp = require('gulp');
-var mochaElectron = require('mocha-electron');
+var mochaElectron = require('mochatron');
 
 gulp.task('test', function() {
   mochaElectron({
@@ -106,7 +106,7 @@ program
 ```
 
 ```sh
-node .\node_modules\mocha-electron -w -s http://localhost/
+node .\node_modules\mochatron -w -s http://localhost/
 ```
 
 ## Roadmap

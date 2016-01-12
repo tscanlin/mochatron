@@ -1,17 +1,17 @@
 {
-  "name": "mocha-electron",
+  "name": "mochatron",
   "version": "1.0.6",
   "description": "mocha testing in electron",
-  "main": "bin/mocha-electron.js",
+  "main": "bin/mochatron.js",
   "bin": {
-    "mocha-electron": "./bin/mocha-electron.js"
+    "mochatron": "./bin/mochatron.js"
   },
   "scripts": {
-    "start": "node bin/mocha-electron.js"
+    "start": "node bin/mochatron.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tscanlin/mocha-electron.git"
+    "url": "git+https://github.com/tscanlin/mochatron.git"
   },
   "keywords": [
     "mocha",
