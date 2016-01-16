@@ -1,13 +1,41 @@
 'use strict';
 var config = require('./config');
 var program = require('commander');
+var fs = require('fs');
+
+function keyValue(val, store) {
+  val = val.split('=');
+  key = val.shift();
+  val = val.join('=');
+  if (val === 'true') {
+    val = true;
+  } else if (val === 'false') {
+    val = false;
+  }
+  store[key] = val;
+  return val;
+}
+
+function cookiesParser(val) {
+  val = JSON.parse(val);
+  cookies.push(val);
+  return val;
+}
+
+function header(val) {
+  return keyValue(val, headers);
+}
+
+function setting(val) {
+  return keyValue(val, settings);
+}
 
 // Handle command line usage.
 program
   .allowUnknownOption()
   .version(JSON.parse(fs.readFileSync(__dirname + '/../package.json', 'utf8')).version)
   .usage('[options] <url>')
-  .option('-r, --reporter <name>',       'specify the reporter to use', 'spec')
+  .option('-R, --reporter <name>',       'specify the reporter to use', 'spec')
   .option('-f, --file <filename>',       'specify the file to dump reporter output')
   .option('-t, --timeout <timeout>',     'specify the test startup timeout to use', parseInt)
   .option('-g, --grep <pattern>',        'only run tests matching <pattern>')
