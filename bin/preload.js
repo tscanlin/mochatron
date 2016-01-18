@@ -4,18 +4,18 @@ var electron = require('electron');
 // Use sprintf because the browser console.log does it, but node does not.
 var sprintf = require('sprintf-js').sprintf;
 
-var mochatron = {
-  run: function() {
-    var mocha = window.mocha;
-    mocha.setup({
-      reporter: 'spec'
-    })
-    mocha.run(doneCallback);
-  }
-}
-
 if (window) {
-  window.mochatron = mochatron;
+  var mocha = window.mocha;
+  var origMochaRun = mocha.run;
+  var origMochaSetup = mocha.setup;
+  mocha.run = function() {
+    origMochaRun(doneCallback);
+  }
+  mocha.setup = function() {
+    origMochaSetup({
+      reporter: 'spec'
+    });
+  }
 }
 
 function sendMsg(type, message) {

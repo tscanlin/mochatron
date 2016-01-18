@@ -1,3 +1,5 @@
+// Default config / options.
+
 module.exports = {
   // Url to test.
   url: 'http://localhost/',

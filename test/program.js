@@ -1,17 +1,20 @@
 // (chai && chai.expect) ||
 var expect = require('chai').expect;
 var spawn = require('npm-execspawn');
+var cwd = process.cwd();
 var mochatron;
+var PROGRAM = 'bin/program';
 
 // var program = require('../bin/program');
 // console.log(spawn('../bin/program --help'));
 
-function run(args) {
+function run() {
+  var args = arguments;
   return new Promise(function(resolve, reject) {
     var stdout = '';
     var stderr = '';
-    var cwd = process.cwd();
-    var spawnArgs = ['node', 'bin/program'].concat(args).join(' ');
+    var argsArray = [].slice.call(args);
+    var spawnArgs = ['node'].concat(argsArray).join(' ');
     mochatron = spawn(spawnArgs);
 
     mochatron.stdout.on('data', function(data) {
@@ -36,7 +39,7 @@ function run(args) {
 
 describe('Program Tests', function() {
   it('Running with --help should show example usage', function(done) {
-    run('--help').then(function(result) {
+    run(PROGRAM, '--help').then(function(result) {
       expect(result.code).to.equal(0);
       expect(result.stdout).to.contain('Usage: program [options] <url>');
       done();
