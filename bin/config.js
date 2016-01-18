@@ -3,10 +3,10 @@
 module.exports = {
   // Url to test.
   url: 'http://localhost/',
-  // Silently swallow errors.
-  silent: false,
+  // Bail on errors.
+  bail: true,
   // Show window.
-  window: false,
+  window: true,
 
   // 'specify the reporter to use'.
   reporter: 'spec'

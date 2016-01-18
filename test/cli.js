@@ -3,7 +3,7 @@ var expect = require('chai').expect;
 var spawn = require('npm-execspawn');
 var cwd = process.cwd();
 var mochatron;
-var PROGRAM = 'bin/program';
+var PROGRAM = 'bin/mochatron-cli';
 
 // var program = require('../bin/program');
 // console.log(spawn('../bin/program --help'));
@@ -40,8 +40,9 @@ function run() {
 describe('Program Tests', function() {
   it('Running with --help should show example usage', function(done) {
     run(PROGRAM, '--help').then(function(result) {
+      console.log(result)
       expect(result.code).to.equal(0);
-      expect(result.stdout).to.contain('Usage: program [options] <url>');
+      expect(result.stdout).to.contain('Usage: mochatron-cli [options] <url>');
       done();
     });
   });

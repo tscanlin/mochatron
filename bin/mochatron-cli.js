@@ -1,6 +1,6 @@
 'use strict';
-var config = require('./config');
 var program = require('commander');
+var mochatron = require('./mochatron.js');
 var fs = require('fs');
 
 function keyValue(val, store) {
@@ -40,15 +40,15 @@ program
   .option('-t, --timeout <timeout>',     'specify the test startup timeout to use', parseInt)
   .option('-g, --grep <pattern>',        'only run tests matching <pattern>')
   .option('-b, --bail',                  'exit on the first test failure', true)
-  .option('-c, --cookies <Object>',      'electron cookie object')
+  .option('-c, --cookies <Object>',      'electron cookie object', cookiesParser)
   .option('-h, --header <name>=<value>', 'specify custom header', header)
+  .option('-s, --setting <key>=<value>', 'specify specific electron settings', setting)
   .option('-w, --window',                'show window', false);
 
   // Options taken from mocha-phantomjs that will not be supported yet.
   // .option('-i, --invert',                'invert --grep matches')
   // .option('-A, --agent <userAgent>',     'specify the user agent to use')
   // .option('-k, --hooks <path>',          'path to hooks module', resolveHooks)
-  // .option('-s, --setting <key>=<value>', 'specify specific phantom settings', setting)
   // .option('-v, --view <width>x<height>', 'specify phantom viewport size', viewport)
   // .option('-C, --no-color',              'disable color escape codes')
   // .option('-p, --path <path>',           'path to PhantomJS binary')
@@ -68,3 +68,5 @@ program.on('--help', function() {
 program.parse(process.argv);
 
 if (!program.args.length) { program.outputHelp(); process.exit(1); };
+
+mochatron(program);

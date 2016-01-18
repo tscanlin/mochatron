@@ -6,15 +6,19 @@ var sprintf = require('sprintf-js').sprintf;
 
 if (window) {
   var mocha = window.mocha;
-  var origMochaRun = mocha.run;
-  var origMochaSetup = mocha.setup;
-  mocha.run = function() {
-    origMochaRun(doneCallback);
-  }
-  mocha.setup = function() {
-    origMochaSetup({
-      reporter: 'spec'
-    });
+  try {
+    var origMochaRun = mocha.run;
+    var origMochaSetup = mocha.setup;
+    mocha.run = function() {
+      origMochaRun(doneCallback);
+    }
+    mocha.setup = function() {
+      origMochaSetup({
+        reporter: 'spec'
+      });
+    }
+  } catch (e) {
+    // console.log(e);
   }
 }
 
@@ -28,6 +32,7 @@ function doneCallback(errorCount) {
   }
 }
 
+sendMsg('log', 'done');
 // Taken from nightmare-js
 (function(){
   // listen for console.log
