@@ -16,8 +16,8 @@ function main(options) {
   if (options) {
     // Reset args because its not being used from the commandline.
     args = [];
-    if (options.silent) args.push('-s');
-    if (options.window) args.push('-w');
+    if (options.silent) args.push('--bail');
+    if (options.window) args.push('--window');
     if (options.url) args.push(options.url);
   }
 

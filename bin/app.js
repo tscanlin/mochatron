@@ -6,12 +6,12 @@ var program = require('commander');
 program
   .version('1.0.6')
   .usage('[options] <url>')
-  .option('-w, --window', 'Show window', false)
-  .option('-s, --silent', 'Silently swallow errors', false)
+  .option('-w, --window', 'Show window', true)
+  .option('-s, --bail', 'Bail on errors', true)
   .parse(process.argv);
 
 if (program.window) config.window = true;
-if (program.silent) config.silent = true;
+if (program.bail) config.bail = true;
 // Make sure the unknown args is a valid file or http URI.
 if (program.args.length) {
   var protocol = program.args[0].substring(0, 4);
@@ -62,6 +62,11 @@ app.on('ready', function() {
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
+
+  // mainWindow.webContents.on('did-get-response-details', function(e, b) {
+  //   console.log( b )
+  //   mainWindow.webContents.executeJavaScript('window.checkForMocha()')
+  // });
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function() {
