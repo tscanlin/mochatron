@@ -13,24 +13,36 @@ function main(conf) {
     config[key] = conf[key] || defaultConfig[key];
   });
 
+  var output = config.file ? fs.open(config.file, 'w') : process.stdout;
+  var fail = function(msg, errno) {
+    if (output && config.file) {
+      output.close()
+    }
+    if (msg) {
+      process.stderr.writeLine(msg)
+    }
+    return app.exit(errno || 1)
+  }
+
   // Determine if valid options were passed in.
   var urlArg = args.filter(function(arg) {
     var protocol = arg.substring(0, 4);
     return (protocol === 'file' || protocol === 'http');
   })[0];
-  console.log(urlArg)
+
+  // Set the url option
   config.url = urlArg;
   if (!urlArg) {
     console.log('No url passed.');
     return;
   }
 
-  console.log(config)
+
   // Spawn the electron process.
   var command = [
     'electron',
     '"' + appScript + '"',
-    JSON.stringify(config) // Stringify the config so it is easier to parse from electron.
+    "'" + JSON.stringify(config) + "'" // Stringify the config so it is easier to parse from electron.
   ].join(' ');
   // console.log(config)
   // console.log(config,conf)
