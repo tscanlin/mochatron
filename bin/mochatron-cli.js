@@ -2,10 +2,12 @@
 var program = require('commander');
 var mochatron = require('./mochatron.js');
 var fs = require('fs');
+var cookies = {};
+var headers = {};
 
 function keyValue(val, store) {
   val = val.split('=');
-  key = val.shift();
+  var key = val.shift();
   val = val.join('=');
   if (val === 'true') {
     val = true;
@@ -13,17 +15,15 @@ function keyValue(val, store) {
     val = false;
   }
   store[key] = val;
-  return val;
-}
-
-function cookiesParser(val) {
-  val = JSON.parse(val);
-  cookies.push(val);
-  return val;
+  return store;
 }
 
 function header(val) {
   return keyValue(val, headers);
+}
+
+function cookie(val) {
+  return keyValue(val, cookies);
 }
 
 function setting(val) {
@@ -36,18 +36,18 @@ program
   .version(JSON.parse(fs.readFileSync(__dirname + '/../package.json', 'utf8')).version)
   .usage('[options] <url>')
   .option('-R, --reporter <name>',       'specify the reporter to use', 'spec')
-  .option('-f, --file <filename>',       'specify the file to dump reporter output')
-  .option('-t, --timeout <timeout>',     'specify the test startup timeout to use', parseInt)
   .option('-g, --grep <pattern>',        'only run tests matching <pattern>')
+  .option('-t, --timeout <timeout>',     'specify the test startup timeout to use', parseInt)
+  .option('-i, --invert',                'invert --grep matches')
   .option('-b, --bail',                  'exit on the first test failure', true)
-  .option('-c, --cookies <Object>',      'electron cookie object', cookiesParser)
+  .option('-c, --cookie <name>=<value>', 'specify cookie name and value', cookie)
   .option('-h, --header <name>=<value>', 'specify custom header', header)
-  .option('-s, --setting <key>=<value>', 'specify specific electron settings', setting)
+  .option('-A, --agent <userAgent>',     'specify the user agent to use')
   .option('-w, --window',                'show window', false);
 
-  // Options taken from mocha-phantomjs that will not be supported yet.
-  // .option('-i, --invert',                'invert --grep matches')
-  // .option('-A, --agent <userAgent>',     'specify the user agent to use')
+  // Options taken from mocha-phantomjs that are not supported yet.
+  // .option('-s, --setting <key>=<value>', 'specify specific electron settings', setting)
+  // .option('-f, --file <filename>',       'specify the file to dump reporter output')
   // .option('-k, --hooks <path>',          'path to hooks module', resolveHooks)
   // .option('-v, --view <width>x<height>', 'specify phantom viewport size', viewport)
   // .option('-C, --no-color',              'disable color escape codes')

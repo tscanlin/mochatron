@@ -18,8 +18,12 @@ var preloadURL = 'file://' + __dirname + '/preload.js';
 // be closed automatically when the JavaScript object is garbage collected.
 var mainWindow;
 
+// Show current config.
+console.log('Config: ' + JSON.stringify(config));
+
 // output
-var output = config.file ? fs.open(config.file, 'w') : process.stdout;
+var output = config.file ? fs.createWriteStream(config.file, 'utf-8') : process.stdout;
+
 var fail = function(msg, errno) {
   if (output && config.file) {
     output.close()
@@ -29,70 +33,6 @@ var fail = function(msg, errno) {
   }
   return app.quit(errno || 1);
 }
-
-// Show current config.
-console.log('Config: ' + JSON.stringify(config));
-
-
-    //
-    // // Mocha needs the formating feature of console.log so copy node's format function and
-    // // monkey-patch it into place. This code is copied from node's, links copyright applies.
-    // // https://github.com/joyent/node/blob/master/lib/util.js
-    // if (!console.format) {
-    //   console.format = function(f) {
-    //     if (typeof f !== 'string') {
-    //       return Array.prototype.map.call(arguments, function(arg) {
-    //         try {
-    //           return JSON.stringify(arg)
-    //         }
-    //         catch (_) {
-    //           return '[Circular]'
-    //         }
-    //       }).join(' ')
-    //     }
-    //     var i = 1;
-    //     var args = arguments;
-    //     var len = args.length;
-    //     var str = String(f).replace(/%[sdj%]/g, function(x) {
-    //       if (x === '%%') return '%';
-    //       if (i >= len) return x;
-    //       switch (x) {
-    //         case '%s': return String(args[i++]);
-    //         case '%d': return Number(args[i++]);
-    //         case '%j':
-    //           try {
-    //             return JSON.stringify(args[i++]);
-    //           } catch (_) {
-    //             return '[Circular]';
-    //           }
-    //         default:
-    //           return x;
-    //       }
-    //     });
-    //     for (var x = args[i]; i < len; x = args[++i]) {
-    //       if (x === null || typeof x !== 'object') {
-    //         str += ' ' + x;
-    //       } else {
-    //         str += ' ' + JSON.stringify(x);
-    //       }
-    //     }
-    //     return str;
-    //   };
-    //   var origError = console.error;
-    //   console.error = function(){
-    //     var message = [].slice.call(arguments); //sprintf.apply(this,
-    //     origError.call(console, console.format.apply(console, arguments));
-    //   };
-    //   var origLog = console.log;
-    //   console.log = function(){
-    //     var message = [].slice.call(arguments); //sprintf.apply(this,
-    //       // This 'if' is kind hacky, not sure why 'stdout:' is being output to the console, maybe it's ANSI related?
-    //     return origLog.call(console, console.format.apply(console, arguments));
-    //   };
-    // }
-
-
-
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function() {
@@ -117,20 +57,30 @@ app.on('ready', function() {
     }
   });
 
-  // and load the index.html of the app.
-  mainWindow.loadURL(config.url, {
-    httpReferrer: config.referrer, // String - A HTTP Referrer url.
-    userAgent: config.userAgent, // String - A user agent originating the request.
-    extraHeaders: config.extraHeaders, // String - Extra headers separated by "\n".
-  });
+  var extraHeaders = '';
+  for (var key in config.header) {
+    extraHeaders += key + ': ' + config.header[key] + '\n';
+  }
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
 
+  // Timeout here so the DevTools has enough time to load and record the first request.
+  setTimeout(function(){
+    mainWindow.loadURL(config.url, {
+      extraHeaders: extraHeaders, // String - Extra headers separated by "\n".
+      userAgent: config.agent, // String - User agent.
+    });
+  }, 500)
 
-  mainWindow.webContents.on('did-get-response-details', function(event, status, url) {
-    if (url.match(/mocha\.js$/)) {
-      mainWindow.webContents.send('execute', 'setConfig' , config);
+
+  mainWindow.webContents.on('did-get-response-details', function(event, status, newURL, originalURL, httpResponseCode, requestMethod, referrer, headers) {
+    // If its the mocha script.
+    if (newURL.match(/mocha\.js$/)) {
+      mainWindow.webContents.send('execute', 'setConfig', config);
+      if (config.cookie) {
+        mainWindow.webContents.send('execute', 'addCookie', config.cookie);
+      }
       mainWindow.webContents.send('execute', 'checkForMocha');
     }
   });
@@ -145,13 +95,12 @@ app.on('ready', function() {
 });
 
 ipc.on('console', function(event, type, message) {
-  // Skip the type for now.
-  console.log(message);
+  console[type](message);
 });
 
 ipc.on('error', function(event, errorCount) {
   console.error('Errors: ' + errorCount);
-  if (!config.silent) {
+  if (config.bail) {
     app.quit();
     // This might be redundant.
     process.exit(errorCount);
@@ -159,14 +108,7 @@ ipc.on('error', function(event, errorCount) {
 });
 
 ipc.on('mocha', function(event, type, data) {
-  console.log(type)
-  if (type === 'stdout') {
-    output.write(data.stdout)
-  // } else if (typeof data.screenshot === 'string') {
-  //   page.render(data.screenshot + '.png')
-  } else if (type === 'configureMocha') {
-    configureMocha(data)
-  } else if (type === 'testRunStarted') {
+  if (type === 'testRunStarted') {
     if (data.testRunStarted == 0) {
       fail('mocha.run() was called with no tests')
     }
@@ -179,68 +121,8 @@ ipc.on('mocha', function(event, type, data) {
     if (config.file) {
       output.close()
     }
-
     // app.quit();
   }
-  // Skip the type for now.
-  // console.log(event);
-  // console.log(obj);
 });
-
-
-function configureMocha() {
-  mainWindow.webContents.send('execute', 'configureMocha', config, process.env)
-  // setup a the reporter
-  // , config, process.env, parseInt(process.env.COLUMNS || 75) * .75 | 0
-
-  // setup a the reporter
-  // if (page.evaluate(setupReporter, reporter) !== true) {
-  //   // we failed to set the reporter - likely a 3rd party reporter than needs to be wrapped
-  //   var customReporter = fs.read(reporter),
-  //   wrapper = function() {
-  //     var exports, module, process, require;
-  //     require = function(what) {
-  //       what = what.replace(/[^a-zA-Z0-9]/g, '')
-  //       for (var r in Mocha.reporters) {
-  //         if (r.toLowerCase() === what) {
-  //           return Mocha.reporters[r]
-  //         }
-  //       }
-  //       throw new Error("Your custom reporter tried to require '" + what + "', but Mocha is not running in Node.js in mocha-phantomjs, so Node modules cannot be required - only other reporters");
-  //     };
-  //     module = {};
-  //     exports = undefined;
-  //     process = Mocha.process;
-  //     'customreporter';
-  //     return Mocha.reporters.Custom = exports || module.exports;
-  //   },
-  //   wrappedReporter = wrapper.toString().replace("'customreporter'", "(function() {" + (customReporter.toString()) + "})()")
-  //
-  //   page.evaluate(wrappedReporter)
-  //   if (page.evaluate(function() { return !Mocha.reporters.Custom }) ||
-  //       page.evaluate(setupReporter) !== true) {
-  //     fail('Failed to use load and use the custom reporter ' + reporter)
-  //   }
-  // }
-
-  // if (typeof config.hooks.beforeStart === 'function') {
-  //   config.hooks.beforeStart(hookData)
-  // }
-  configured = true
-}
-
-//
-//
-// function setupReporter(reporter) {
-//   try {
-//     mocha.setup({
-//       reporter: reporter || Mocha.reporters.Custom
-//     })
-//     return true
-//   } catch (error) {
-//     return error
-//   }
-// }
-
 
 module.exports = app;
