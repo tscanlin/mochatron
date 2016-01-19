@@ -46,11 +46,9 @@ function doneCallback(errorCount) {
     else {
       expires = '';
     }
-    document.cookie = name + "=" + value + expires + "; path=/";
+    document.cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value) + expires + "; path=/";
   }
 
-
-  // console.log(mocha)
   electron.ipcRenderer.on('execute', function(event, command, opts, env) {
     if (command === 'setConfig') {
       config = opts;
