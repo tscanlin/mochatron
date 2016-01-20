@@ -12,7 +12,8 @@ var electron = require('electron');
 var app = electron.app;  // Module to control application life.
 var ipc = electron.ipcMain;  // Module for inter-process communication.
 var BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
-var preloadURL = 'file://' + __dirname + '/preload.js';
+var preloadFile = config.preloadFile || '/preload.js';
+var preloadURL = 'file://' + __dirname + preloadFile;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
