@@ -16,10 +16,14 @@ module.exports = {
   // Invert --grep matches.
   invert: false,
 
-  // Cookie object(s).
+  // Specify cookie name and value.
   cookie: null,
-  // Customer header(s).
+  // Specify custom header.
   header: null,
-  // Custom userAgent, leave as null for default.
-  agent: null
+  // Specify the user agent to use.
+  agent: null,
+  // Path to hooks module.
+  hooks: null,
+  // Specify the file to dump reporter output.
+  file: null
 };

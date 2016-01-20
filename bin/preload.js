@@ -3,6 +3,7 @@
 var electron = require('electron');
 var util = require('util');
 
+// Send a message through ipcRenderer.
 function sendMsg(channel, type, message) {
   electron.ipcRenderer.send(channel, type, message);
 }
@@ -13,8 +14,10 @@ function doneCallback(errorCount) {
   }
 }
 
+// Execute inside anonymous self-executing function.
 (function(){
   var config = {};
+  var hookData;
 
   function configureMocha(config, env) {
     mocha.env = env
@@ -52,12 +55,15 @@ function doneCallback(errorCount) {
   electron.ipcRenderer.on('execute', function(event, command, opts, env) {
     if (command === 'setConfig') {
       config = opts;
+
     } else if (command === 'checkForMocha') {
       window.checkForMocha();
+
     } else if (command === 'addCookie') {
       for (var key in opts) {
         createCookie(key, opts[key], 1); // Default to 1 day.
       }
+
     } else if (command === 'eval') {
       eval(opts);
     }
@@ -120,6 +126,22 @@ function doneCallback(errorCount) {
       Mocha.process.stdout = Mocha.process.stdout || process.stdout
       Mocha.process.stdout.write = function(s) { sendMsg('mocha', 'stdout', s) }
 
+      // Declare hooks
+      if (config.hooks) {
+        hookData = {
+          config: config
+        }
+        try {
+          config.hooks = require(config.hooks)
+        }
+        catch (e) {
+          console.error('Error loading hooks: ' + e.message)
+        }
+      } else {
+        config.hooks = {}
+      }
+
+      // Override mocha.ui and mocha.run
       var origRun = mocha.run, origUi = mocha.ui
       mocha.ui = function() {
         var retval = origUi.apply(mocha, arguments)
@@ -131,14 +153,30 @@ function doneCallback(errorCount) {
       mocha.run = function() {
         sendMsg('mocha', 'testRunStarted', mocha.suite.suites.length)
         mocha.runner = origRun.apply(mocha, [].concat(doneCallback, arguments))
-        if (mocha.runner.stats && mocha.runner.stats.end) {
+
+        // After test ends.
+        function testRunEnded() {
+          if (typeof config.hooks.afterEnd === 'function') {
+            hookData.runner = mocha.runner;
+            config.hooks.afterEnd(hookData);
+          }
+
           sendMsg('mocha', 'testRunEnded', mocha.runner)
+        }
+        // Mocha is done.
+        if (mocha.runner.stats && mocha.runner.stats.end) {
+          testRunEnded();
         } else {
           mocha.runner.on('end', function() {
-            sendMsg('mocha', 'testRunEnded', mocha.runner)
+            testRunEnded();
           })
         }
         return mocha.runner
+      }
+
+      // Before start hook.
+      if (typeof config.hooks.beforeStart === 'function') {
+        config.hooks.beforeStart(hookData)
       }
 
       delete window.initMochatron

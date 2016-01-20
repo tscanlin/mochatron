@@ -23,7 +23,7 @@ console.log('Config: ' + JSON.stringify(config));
 
 // output
 var output = config.file ? fs.createWriteStream(config.file, 'utf-8') : process.stdout;
-
+// fail
 var fail = function(msg, errno) {
   if (output && config.file) {
     output.close()
@@ -94,12 +94,20 @@ app.on('ready', function() {
   });
 });
 
+// Listen for events.
 ipc.on('console', function(event, type, message) {
   console[type](message);
+  if (config.file) {
+    output.write(text + '\r\n');
+  }
 });
 
 ipc.on('error', function(event, errorCount) {
-  console.error('Errors: ' + errorCount);
+  var text = 'Errors: ' + errorCount;
+  console.error(text);
+  if (config.file) {
+    output.write(text + '\r\n');
+  }
   if (config.bail) {
     app.quit();
     // This might be redundant.
@@ -112,14 +120,10 @@ ipc.on('mocha', function(event, type, data) {
     if (data.testRunStarted == 0) {
       fail('mocha.run() was called with no tests')
     }
-    runStarted = true
+    runStarted = true;
   } else if (data.testRunEnded) {
-    // if (typeof config.hooks.afterEnd === 'function') {
-    //   hookData.runner = data.testRunEnded
-    //   config.hooks.afterEnd(hookData)
-    // }
     if (config.file) {
-      output.close()
+      output.close();
     }
     // app.quit();
   }

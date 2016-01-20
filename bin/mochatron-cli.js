@@ -1,9 +1,11 @@
 'use strict';
 var program = require('commander');
 var mochatron = require('./mochatron.js');
+var path = require('path');
 var fs = require('fs');
 var cookies = {};
 var headers = {};
+// var settings = {}; // unused for now.
 
 function keyValue(val, store) {
   val = val.split('=');
@@ -41,19 +43,18 @@ program
   .option('-i, --invert',                'invert --grep matches')
   .option('-b, --bail',                  'exit on the first test failure', true)
   .option('-c, --cookie <name>=<value>', 'specify cookie name and value', cookie)
+  .option('-k, --hooks <path>',          'path to hooks module')
   .option('-h, --header <name>=<value>', 'specify custom header', header)
+  .option('-f, --file <filename>',       'specify the file to dump reporter output')
   .option('-A, --agent <userAgent>',     'specify the user agent to use')
   .option('-w, --window',                'show window', false);
 
   // Options taken from mocha-phantomjs that are not supported yet.
   // .option('-s, --setting <key>=<value>', 'specify specific electron settings', setting)
-  // .option('-f, --file <filename>',       'specify the file to dump reporter output')
-  // .option('-k, --hooks <path>',          'path to hooks module', resolveHooks)
   // .option('-v, --view <width>x<height>', 'specify phantom viewport size', viewport)
   // .option('-C, --no-color',              'disable color escape codes')
   // .option('-p, --path <path>',           'path to PhantomJS binary')
   // .option('--ignore-resource-errors',    'ignore resource errors');
-  // .option('-s, --silent', 'Silently swallow errors', false)
   // .parse(process.argv);
 
 program.on('--help', function() {

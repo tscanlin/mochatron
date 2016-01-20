@@ -4,6 +4,8 @@ var defaultConfig = require('./config.js');
 var xtend = require('xtend');
 var fs = require('fs');
 var path = require('path');
+var exists = fs.existsSync || path.existsSync;
+
 var appScript = path.join(__dirname, '/app.js');
 var args = process.argv.slice(2);
 
@@ -26,6 +28,22 @@ function main(conf) {
     console.log('No url passed.');
     return;
   }
+
+  // Resolve hooks.
+  if (config.hooks) {
+    function resolveHooks(val) {
+      var absPath = path.resolve(process.cwd(), val);
+      if (!exists(absPath)) {
+        for (var i = 0; i < module.paths.length - 1; i++) {
+          absPath = path.join(module.paths[i], val);
+          if (exists(absPath)) return absPath;
+        };
+      }
+      return absPath;
+    }
+    config.hooks = resolveHooks(config.hooks);
+  }
+
 
   // Spawn the electron process.
   var command = [
