@@ -32,30 +32,37 @@ function setting(val) {
   return keyValue(val, settings);
 }
 
+function viewport(val) {
+  val = val.split('x');
+  return {
+    width: parseFloat(val[0]),
+    height: parseFloat(val[1])
+  };
+}
+
 // Handle command line usage.
 program
   .allowUnknownOption()
   .version(JSON.parse(fs.readFileSync(__dirname + '/../package.json', 'utf8')).version)
   .usage('[options] <url>')
+  .option('-h, --help',                  'output usage information')
+  .option('-V, --version',               'output the version number')
   .option('-R, --reporter <name>',       'specify the reporter to use', 'spec')
-  .option('-g, --grep <pattern>',        'only run tests matching <pattern>')
-  .option('-t, --timeout <timeout>',     'specify the test startup timeout to use', parseInt)
-  .option('-i, --invert',                'invert --grep matches')
-  .option('-b, --bail',                  'exit on the first test failure', true)
-  .option('-c, --cookie <name>=<value>', 'specify cookie name and value', cookie)
-  .option('-k, --hooks <path>',          'path to hooks module')
-  .option('-h, --header <name>=<value>', 'specify custom header', header)
   .option('-f, --file <filename>',       'specify the file to dump reporter output')
+  .option('-t, --timeout <timeout>',     'specify the test startup timeout to use', parseInt)
+  .option('-l, --load-timeout <timeout>','load timeout before the browser window opens so DevTools can load', parseInt)
+  .option('-g, --grep <pattern>',        'only run tests matching <pattern>')
+  .option('-i, --invert',                'invert --grep matches')
+  .option('-b, --bail',                  'exit on the first test failure')
   .option('-A, --agent <userAgent>',     'specify the user agent to use')
-  .option('-w, --window',                'show window', false);
-
-  // Options taken from mocha-phantomjs that are not supported yet.
+  .option('-c, --cookie <name>=<value>', 'specify cookie name and value', cookie)
+  .option('-h, --header <name>=<value>', 'specify custom header', header)
+  .option('-k, --hooks <path>',          'path to hooks module')
+  .option('-v, --view <width>x<height>', 'specify electron window size', viewport)
+  .option('-p, --path <path>',           'path to the electron binary')
+  .option('-w, --window',                'show window');
   // .option('-s, --setting <key>=<value>', 'specify specific electron settings', setting)
-  // .option('-v, --view <width>x<height>', 'specify phantom viewport size', viewport)
-  // .option('-C, --no-color',              'disable color escape codes')
-  // .option('-p, --path <path>',           'path to PhantomJS binary')
   // .option('--ignore-resource-errors',    'ignore resource errors');
-  // .parse(process.argv);
 
 program.on('--help', function() {
   console.log('');

@@ -48,8 +48,8 @@ app.on('window-all-closed', function() {
 app.on('ready', function() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    height: 1200,
-    width: 1600,
+    height: config.view && config.view.height || 1200,
+    width: config.view && config.view.width || 1600,
     show: config.window,
     webPreferences: {
       preloadURL: preloadURL,
@@ -71,8 +71,7 @@ app.on('ready', function() {
       extraHeaders: extraHeaders, // String - Extra headers separated by "\n".
       userAgent: config.agent, // String - User agent.
     });
-  }, 500)
-
+  }, config.loadTimeout)
 
   mainWindow.webContents.on('did-get-response-details', function(event, status, newURL, originalURL, httpResponseCode, requestMethod, referrer, headers) {
     // If its the mocha script.
@@ -96,9 +95,19 @@ app.on('ready', function() {
 
 // Listen for events.
 ipc.on('console', function(event, type, message) {
-  console[type](message);
-  if (config.file) {
-    output.write(text + '\r\n');
+  try {
+    console[type](message);
+    if (config.file) {
+      output.write(text + '\r\n');
+    }
+  } catch (e) {}
+
+  if (type === 'screenshot') {
+    var fileName = message;
+    mainWindow.capturePage(function(image) {
+      var data = image.toPng();
+      fs.writeFileSync(fileName, data);
+    })
   }
 });
 

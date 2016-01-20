@@ -87,6 +87,14 @@ function doneCallback(errorCount) {
     return defaultWarn.apply(this, arguments);
   };
 
+  // listen for console.warn
+  var defaultInfo = console.info;
+  console.info = function() {
+    var message = util.format.apply(util.format, [].slice.call(arguments));
+    sendMsg('console', 'info', message);
+    return defaultInfo.apply(this, arguments);
+  };
+
   // listen for console.error
   var defaultError = console.error;
   console.error = function() {
@@ -109,6 +117,11 @@ function doneCallback(errorCount) {
   window.confirm = function(message, defaultResponse){
     sendMsg('page', 'confirm', message, defaultResponse);
   }
+
+  window.mochatron = {};
+  window.mochatron.screenshot = function(fileName) {
+    sendMsg('console', 'screenshot', fileName);
+  };
 
 
   // Taken from mocha-phantomjs

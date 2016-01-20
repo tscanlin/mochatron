@@ -46,8 +46,9 @@ function main(conf) {
 
 
   // Spawn the electron process.
+  var electronCommand = config.path || 'electron';
   var command = [
-    'electron',
+    electronCommand,
     '"' + appScript + '"',
     "'" + JSON.stringify(config) + "'" // Stringify the config so it is easier to parse from electron.
   ].join(' ');

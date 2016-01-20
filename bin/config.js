@@ -13,6 +13,8 @@ module.exports = {
   grep: null,
   // Specify the test startup timeout to use.
   timeout: 2000,
+  // Load timeout before the browser window opens so DevTools can load.
+  loadTimeout: 500,
   // Invert --grep matches.
   invert: false,
 
@@ -25,5 +27,9 @@ module.exports = {
   // Path to hooks module.
   hooks: null,
   // Specify the file to dump reporter output.
-  file: null
+  file: null,
+  // Specify electron window size.
+  view: null,
+  // Path to the electron binary
+  path: null
 };
