@@ -97,9 +97,9 @@ app.on('ready', function() {
 // Listen for events.
 ipc.on('console', function(event, type, message) {
   try {
-    console[type](message);
+    output.write(message + '\r\n');
     if (config.file) {
-      output.write(text + '\r\n');
+      console[type](message);
     }
   } catch (e) {}
 
@@ -114,9 +114,9 @@ ipc.on('console', function(event, type, message) {
 
 ipc.on('error', function(event, errorCount) {
   var text = 'Errors: ' + errorCount;
-  console.error(text);
+  output.write(text + '\r\n');
   if (config.file) {
-    output.write(text + '\r\n');
+    console.error(text);
   }
   if (config.bail) {
     app.quit();
@@ -126,12 +126,15 @@ ipc.on('error', function(event, errorCount) {
 });
 
 ipc.on('mocha', function(event, type, data) {
-  if (type === 'testRunStarted') {
+  if (type === 'stdout') {
+    // TODO: This add escape chars, might add coloring?
+    // output.write(data);
+  } else if (type === 'testRunStarted') {
     if (data.testRunStarted == 0) {
       fail('mocha.run() was called with no tests')
     }
     runStarted = true;
-  } else if (data.testRunEnded) {
+  } else if (type === 'testRunEnded') {
     if (config.file) {
       output.close();
     }

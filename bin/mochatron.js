@@ -4,6 +4,7 @@ var defaultConfig = require('./config.js');
 var xtend = require('xtend');
 var fs = require('fs');
 var path = require('path');
+var fileUrl = require('file-url');
 var exists = fs.existsSync || path.existsSync;
 
 var appScript = path.join(__dirname, '/app.js');
@@ -16,18 +17,12 @@ function main(conf) {
     config[key] = conf[key] || defaultConfig[key];
   });
 
-  // Determine if valid options were passed in.
-  var urlArg = args.filter(function(arg) {
-    var protocol = arg.substring(0, 4);
-    return (protocol === 'file' || protocol === 'http');
-  })[0];
-
-  // Set the url option
-  config.url = urlArg;
-  if (!urlArg) {
-    console.log('No url passed.');
-    return;
+  // Resolve to a file URL if its not http*.
+  var urlArg = conf.args[0];
+  if (urlArg.indexOf('http') !== 0) {
+    urlArg = fileUrl(urlArg);
   }
+  config.url = urlArg;
 
   // Resolve hooks.
   if (config.hooks) {
