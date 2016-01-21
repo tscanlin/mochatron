@@ -138,7 +138,9 @@ ipc.on('mocha', function(event, type, data) {
     if (config.file) {
       output.close();
     }
-    // app.quit();
+    if (config.quit) {
+      app.quit();
+    }
   }
 });
 

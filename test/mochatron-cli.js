@@ -36,7 +36,9 @@ function run() {
 }
 
 
-describe('Program Tests', function() {
+describe('mochatron-cli tests', function() {
+  this.timeout(5000);
+
   it('Running with nothing should show command usage', function(done) {
     run(PROGRAM).then(function(result) {
       expect(result.code).to.equal(1);
@@ -54,24 +56,23 @@ describe('Program Tests', function() {
   });
 
   it('Running with a url should run the tests for that page', function(done) {
-    console.log(path.join('test/index.html'))
-    run(PROGRAM, 'test/index.html').then(function(result) {
-      console.log(result)
+    run(PROGRAM, '--quit', '--hooks', 'test/util/hooks.js', 'test/index.html').then(function(result) {
+      // console.log(result)
       expect(result.code).to.equal(0);
       expect(result.stdout).to.contain('Basic HTML Tests');
-      // expect(result.stdout).to.contain('Test H1');
-      // expect(result.stdout).to.contain('should contain "Test"');
-      // expect(result.stdout).to.contain('should not contain "It"');
-      // expect(result.stdout).to.contain('2 passing');
+      expect(result.stdout).to.contain('Test H1');
+      expect(result.stdout).to.contain('✓ should contain "Test"');
+      expect(result.stdout).to.contain('✓ should not contain "It"');
+      expect(result.stdout).to.contain('2 passing');
       done();
     });
   });
   // also do timeout case.
 
-  xit('Running with --reporter should let users change the reporter to use', function(done) {
-    run(PROGRAM, '--reporter', 'dot').then(function(result) {
-      expect(result.code).to.equal(1);
-      expect(result.stdout).to.contain('Usage: mochatron-cli [options] <url>');
+  it('Running with --reporter should let users change the reporter to use', function(done) {
+    run(PROGRAM, '--quit', '--reporter', 'dot', 'test/index.html').then(function(result) {
+      expect(result.code).to.equal(0);
+      expect(result.stdout).to.contain('2 passing');
       done();
     });
   });

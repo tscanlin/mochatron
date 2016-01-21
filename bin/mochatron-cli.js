@@ -60,6 +60,7 @@ program
   .option('-k, --hooks <path>',          'path to hooks module')
   .option('-v, --view <width>x<height>', 'specify electron window size', viewport)
   .option('-p, --path <path>',           'path to the electron binary')
+  .option('-q, --quit',                  'quit once tests finish.')
   .option('-w, --window',                'show window');
   // .option('-s, --setting <key>=<value>', 'specify specific electron settings', setting)
   // .option('--ignore-resource-errors',    'ignore resource errors');

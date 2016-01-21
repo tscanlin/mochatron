@@ -4,8 +4,10 @@ module.exports = {
   url: 'http://localhost/',
   // Exit on the first test failure.
   bail: false,
+  // Quit once tests finish.
+  quit: false,
   // Show window.
-  window: true,
+  window: false,
 
   // Specify the reporter to use.
   reporter: 'spec',
