@@ -38,7 +38,7 @@ function run() {
 
 
 describe('mochatron-cli tests', function() {
-  this.timeout(7000);
+  this.timeout(10000);
 
   afterEach(function() {
     mochatron.kill();
@@ -93,5 +93,37 @@ describe('mochatron-cli tests', function() {
       done();
     });
   });
+
+  it('Running with --grep should selectively run tests that match the grep pattern', function(done) {
+    run(PROGRAM, '--quit', '--grep', '"should not"', 'test/index.html').then(function(result) {
+      expect(result.code).to.equal(0);
+      expect(result.stdout).to.contain('should not');
+      expect(result.stdout).to.not.contain('should contain');
+      expect(result.stdout).to.contain('1 passing');
+      done();
+    });
+  });
+
+  it('Running with --grep and --invert should selectively run tests that DO NOT match the grep pattern', function(done) {
+    run(PROGRAM, '--quit', '--grep', '"should not"', '--invert', 'test/index.html').then(function(result) {
+      // console.log(result);
+      expect(result.code).to.equal(0);
+      expect(result.stdout).to.contain('should contain');
+      expect(result.stdout).to.not.contain('should not contain "It"');
+      expect(result.stdout).to.contain('1 passing');
+      done();
+    });
+  });
+
+
+  // --bail',
+  // --agent <userAgent>',
+  // --cookie <name>=<value>'
+  // --header <name>=<value>'
+  // --hooks <path>',
+  // --view <width>x<height>'
+  // --path <path>',
+  // --quit',
+  // --window'
 
 });

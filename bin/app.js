@@ -20,7 +20,9 @@ var preloadURL = 'file://' + __dirname + preloadFile;
 var mainWindow;
 
 // Show current config.
-console.log('Config: ' + JSON.stringify(config));
+if (config.debug) {
+  console.log('Config: ' + JSON.stringify(config));
+}
 
 // output
 var output = config.file ? fs.createWriteStream(config.file, 'utf-8') : process.stdout;
