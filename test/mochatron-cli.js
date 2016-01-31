@@ -1,6 +1,7 @@
 // (chai && chai.expect) ||
 var expect = require('chai').expect;
 var spawn = require('npm-execspawn');
+var fs = require('fs');
 var path = require('path');
 var fileUrl = require('file-url');
 var cwd = process.cwd();
@@ -37,7 +38,11 @@ function run() {
 
 
 describe('mochatron-cli tests', function() {
-  this.timeout(5000);
+  this.timeout(7000);
+
+  afterEach(function() {
+    mochatron.kill();
+  });
 
   it('Running with nothing should show command usage', function(done) {
     run(PROGRAM).then(function(result) {
@@ -73,6 +78,18 @@ describe('mochatron-cli tests', function() {
     run(PROGRAM, '--quit', '--reporter', 'dot', 'test/index.html').then(function(result) {
       expect(result.code).to.equal(0);
       expect(result.stdout).to.contain('2 passing');
+      done();
+    });
+  });
+
+  it('Running with --file should dump test results to a file', function(done) {
+    var testFile = 'test-results.txt';
+    run(PROGRAM, '--quit', '--file', testFile, 'test/index.html').then(function(result) {
+      expect(result.code).to.equal(0);
+      expect(result.stdout).to.contain('2 passing');
+      var file = fs.readFileSync(testFile);
+      expect(file.toString()).to.contain('2 passing');
+      fs.unlinkSync(testFile);
       done();
     });
   });
