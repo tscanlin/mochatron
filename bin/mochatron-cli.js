@@ -70,7 +70,7 @@ program.on('--help', function() {
   console.log('  Examples:');
   console.log('');
   console.log('    $ mochatron http://example.com/test/index.html');
-  console.log('    $ mochatron -r dot test/index.html');
+  console.log('    $ mochatron -R dot test/index.html');
   console.log('');
 });
 

@@ -56,7 +56,7 @@ describe('mochatron-cli tests', function() {
   });
 
   it('Running with a url should run the tests for that page', function(done) {
-    run(PROGRAM, '--quit', '--hooks', 'test/util/hooks.js', 'test/index.html').then(function(result) {
+    run(PROGRAM, '--quit', 'test/index.html').then(function(result) {
       // console.log(result)
       expect(result.code).to.equal(0);
       expect(result.stdout).to.contain('Basic HTML Tests');
@@ -64,6 +64,20 @@ describe('mochatron-cli tests', function() {
       expect(result.stdout).to.contain('✓ should contain "Test"');
       expect(result.stdout).to.contain('✓ should not contain "It"');
       expect(result.stdout).to.contain('2 passing');
+      done();
+    });
+  });
+
+  it('Running with --hooks should run hooks in the specified file before and after the test', function(done) {
+    run(PROGRAM, '--quit', '--hooks', 'test/util/hooks.js', 'test/index.html').then(function(result) {
+      expect(result.code).to.equal(0);
+      expect(result.stdout).to.contain('Before start called correctly!');
+      expect(result.stdout).to.contain('Basic HTML Tests');
+      expect(result.stdout).to.contain('Test H1');
+      expect(result.stdout).to.contain('✓ should contain "Test"');
+      expect(result.stdout).to.contain('✓ should not contain "It"');
+      expect(result.stdout).to.contain('2 passing');
+      expect(result.stdout).to.contain('After end called correctly!');
       done();
     });
   });
