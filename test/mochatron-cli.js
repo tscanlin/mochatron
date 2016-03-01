@@ -86,7 +86,6 @@ describe('mochatron-cli tests', function() {
       done();
     });
   });
-  // also do timeout case.
 
   it('Running with --reporter should let users change the reporter to use', function(done) {
     run(PROGRAM, '--quit', '--reporter', 'dot', 'test/index.html').then(function(result) {
@@ -120,7 +119,6 @@ describe('mochatron-cli tests', function() {
 
   it('Running with --grep and --invert should selectively run tests that DO NOT match the grep pattern', function(done) {
     run(PROGRAM, '--quit', '--grep', '"should not"', '--invert', 'test/index.html').then(function(result) {
-      // console.log(result);
       expect(result.code).to.equal(0);
       expect(result.stdout).to.contain('should contain');
       expect(result.stdout).to.not.contain('should not contain "It"');
@@ -128,6 +126,36 @@ describe('mochatron-cli tests', function() {
       done();
     });
   });
+
+  it('Running with --debug should show helpful debugging info', function(done) {
+    console.log(a)
+    var a = run(PROGRAM, '--quit', '--debug', 'test/index.html').then(function(result) {
+      console.log(this)
+      expect(result.stdout).to.contain('Config: {"url":"file:///D:/Code/mochatron/test/index.html","debug":true');
+      expect(result.code).to.equal(0);
+      expect(result.stdout).to.contain('2 passing');
+      done();
+    });
+  });
+
+
+  // bail: false,
+  // quit: false,
+
+  // window: false,
+
+  // timeout: 2000,
+  // loadTimeout: 500,
+
+  // cookie: null,
+  // header: null,
+  // agent: null,
+
+  // view: null,
+  // path: null
+
+
+  // url
 
 
   // --bail',
