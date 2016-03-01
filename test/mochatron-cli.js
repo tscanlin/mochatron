@@ -1,6 +1,7 @@
 // (chai && chai.expect) ||
 var expect = require('chai').expect;
 var spawn = require('npm-execspawn');
+var fs = require('fs');
 var path = require('path');
 var fileUrl = require('file-url');
 var cwd = process.cwd();
@@ -37,7 +38,11 @@ function run() {
 
 
 describe('mochatron-cli tests', function() {
-  this.timeout(5000);
+  this.timeout(10000);
+
+  afterEach(function() {
+    mochatron.kill();
+  });
 
   it('Running with nothing should show command usage', function(done) {
     run(PROGRAM).then(function(result) {
@@ -90,5 +95,49 @@ describe('mochatron-cli tests', function() {
       done();
     });
   });
+
+  it('Running with --file should dump test results to a file', function(done) {
+    var testFile = 'test-results.txt';
+    run(PROGRAM, '--quit', '--file', testFile, 'test/index.html').then(function(result) {
+      expect(result.code).to.equal(0);
+      expect(result.stdout).to.contain('2 passing');
+      var file = fs.readFileSync(testFile);
+      expect(file.toString()).to.contain('2 passing');
+      fs.unlinkSync(testFile);
+      done();
+    });
+  });
+
+  it('Running with --grep should selectively run tests that match the grep pattern', function(done) {
+    run(PROGRAM, '--quit', '--grep', '"should not"', 'test/index.html').then(function(result) {
+      expect(result.code).to.equal(0);
+      expect(result.stdout).to.contain('should not');
+      expect(result.stdout).to.not.contain('should contain');
+      expect(result.stdout).to.contain('1 passing');
+      done();
+    });
+  });
+
+  it('Running with --grep and --invert should selectively run tests that DO NOT match the grep pattern', function(done) {
+    run(PROGRAM, '--quit', '--grep', '"should not"', '--invert', 'test/index.html').then(function(result) {
+      // console.log(result);
+      expect(result.code).to.equal(0);
+      expect(result.stdout).to.contain('should contain');
+      expect(result.stdout).to.not.contain('should not contain "It"');
+      expect(result.stdout).to.contain('1 passing');
+      done();
+    });
+  });
+
+
+  // --bail',
+  // --agent <userAgent>',
+  // --cookie <name>=<value>'
+  // --header <name>=<value>'
+  // --hooks <path>',
+  // --view <width>x<height>'
+  // --path <path>',
+  // --quit',
+  // --window'
 
 });

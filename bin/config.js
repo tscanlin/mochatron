@@ -2,6 +2,8 @@
 module.exports = {
   // Url to test.
   url: 'http://localhost/',
+  // Output helpful debugging information.
+  debug: false,
   // Exit on the first test failure.
   bail: false,
   // Quit once tests finish.
