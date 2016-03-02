@@ -17,14 +17,22 @@ function run() {
     var stderr = '';
     var argsArray = [].slice.call(args);
     mochatron = spawn('node', argsArray);
+    console.log('run')
 
     mochatron.stdout.on('data', function(data) {
       console.log(data.toString())
       stdout = stdout.concat(data.toString());
     })
     mochatron.stderr.on('data', function(data) {
-      console.log('err', data.toString())
       stderr = stderr.concat(data.toString());
+    })
+    mochatron.once('close', function(code) {
+      console.log('close')
+      resolve({
+        code: code,
+        stdout: stdout,
+        stderr: stderr
+      });
     })
     mochatron.once('exit', function(code) {
       console.log('exit')
@@ -134,7 +142,7 @@ describe('mochatron-cli tests', function() {
   it('Running with --debug should show helpful debugging info', function(done) {
     run(PROGRAM, '--quit', '--debug', 'test/index.html').then(function(result) {
       // expect(result.code).to.not.be.above(0);
-      expect(result.stdout).to.contain('Config: {"url":"file:///D:/Code/mochatron/test/index.html","debug":true');
+      expect(result.stdout).to.contain('Config: {"url":');
       expect(result.stdout).to.contain('2 passing');
       done();
     }).catch(function(e) { console.log(e) });
