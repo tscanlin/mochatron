@@ -77,6 +77,9 @@ program.on('--help', function() {
 
 program.parse(process.argv);
 
-if (!program.args.length) { program.outputHelp(); process.exit(1); };
+if (!program.args.length) {
+  program.outputHelp();
+  process.exit(0);
+};
 
 mochatron(program);

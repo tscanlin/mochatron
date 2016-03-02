@@ -49,6 +49,16 @@ function main(conf) {
   ].join(' ');
   var app = spawn(command);
 
+  // Using node's native spawn.
+  
+  // Spawn the electron process.
+  // var electronCommand = config.path || 'electron';
+  // console.log(electronCommand)
+  // var app = spawn(electronCommand, [
+  //   appScript,
+  //   JSON.stringify(config) // Stringify the config so it is easier to parse from electron.
+  // ]);
+
   app.stderr.pipe(process.stderr);
   app.stdout.pipe(process.stdout);
 

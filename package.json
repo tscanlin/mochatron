@@ -7,7 +7,7 @@
     "mochatron": "./bin/mochatron.js"
   },
   "scripts": {
-    "start": "node bin/program.js",
+    "start": "node bin/mochatron-cli.js",
     "test": "node test/index.js"
   },
   "repository": {
@@ -30,7 +30,6 @@
     "electron-prebuilt": "^0.36.2",
     "file-url": "^1.0.1",
     "mocha": "^2.3.4",
-    "npm-execspawn": "^1.2.1",
     "xtend": "^4.0.1"
   }
 }
