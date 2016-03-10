@@ -18,7 +18,7 @@ function main(conf) {
   });
 
   // Resolve to a file URL if its not http*.
-  var urlArg = conf.args[0];
+  var urlArg = conf.args ? conf.args[0] : conf.url;
   if (urlArg.indexOf('http') !== 0) {
     urlArg = fileUrl(urlArg);
   }
@@ -50,7 +50,7 @@ function main(conf) {
   var app = spawn(command);
 
   // Using node's native spawn.
-  
+
   // Spawn the electron process.
   // var electronCommand = config.path || 'electron';
   // console.log(electronCommand)
@@ -61,6 +61,10 @@ function main(conf) {
 
   app.stderr.pipe(process.stderr);
   app.stdout.pipe(process.stdout);
+
+  process.on('exit', function () {
+    app.kill();
+  });
 
   return app;
 }

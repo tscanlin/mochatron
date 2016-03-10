@@ -9,14 +9,14 @@ module.exports = {
   // Quit once tests finish.
   quit: false,
   // Show window.
-  window: false,
+  window: true,
 
   // Specify the reporter to use.
   reporter: 'spec',
   // Only run tests matching <pattern>.
   grep: null,
   // Specify the test startup timeout to use.
-  timeout: 2000,
+  timeout: 5000,
   // Load timeout before the browser window opens so DevTools can load.
   loadTimeout: 500,
   // Invert --grep matches.
