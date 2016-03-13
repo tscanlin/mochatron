@@ -205,8 +205,11 @@ function doneCallback(errorCount) {
         return src && src.match(/mocha\.js$/)
       })[0]
 
-      if (mochaScript) {
+      // console.log('ready:', isFileReady(mochaScript.readyState), !!mochaScript)
+      // console.log(window.mocha)
+      if (!!mochaScript) {
         mochaScript.onreadystatechange = mochaScript.onload = function () {
+          console.log('ready fired!!')
           if (isFileReady(mochaScript.readyState)) {
             window.initMochatron()
           }
