@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-var spawn = require('npm-execspawn');
+var spawn = require('cross-spawn');
 var defaultConfig = require('./config.js');
 var xtend = require('xtend');
 var fs = require('fs');
@@ -39,25 +39,13 @@ function main(conf) {
     config.hooks = resolveHooks(config.hooks);
   }
 
-
   // Spawn the electron process.
   var electronCommand = config.path || 'electron';
-  var command = [
-    electronCommand,
-    '"' + appScript + '"',
-    "'" + JSON.stringify(config) + "'" // Stringify the config so it is easier to parse from electron.
-  ].join(' ');
-  var app = spawn(command);
-
-  // Using node's native spawn.
-
-  // Spawn the electron process.
-  // var electronCommand = config.path || 'electron';
-  // console.log(electronCommand)
-  // var app = spawn(electronCommand, [
-  //   appScript,
-  //   JSON.stringify(config) // Stringify the config so it is easier to parse from electron.
-  // ]);
+  console.log(electronCommand)
+  var app = spawn(electronCommand, [
+    appScript,
+    JSON.stringify(config) // Stringify the config so it is easier to parse from electron.
+  ]);
 
   app.stderr.pipe(process.stderr);
   app.stdout.pipe(process.stdout);

@@ -27,6 +27,7 @@
   "dependencies": {
     "chai": "^3.4.1",
     "commander": "^2.9.0",
+    "cross-spawn": "^2.1.5",
     "electron-prebuilt": "^0.36.2",
     "file-url": "^1.0.1",
     "mocha": "^2.3.4",

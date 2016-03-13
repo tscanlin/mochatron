@@ -21,7 +21,6 @@ function run(conf) {
     console.log('run')
 
     mochatron.stdout.on('data', function(data) {
-      console.log(data.toString())
       stdout = stdout.concat(data.toString());
     })
     mochatron.stderr.on('data', function(data) {
@@ -55,7 +54,7 @@ describe('mochatron tests', function() {
   this.timeout(8000);
 
   afterEach(function() {
-    // mochatron.kill();
+    mochatron.kill();
   });
 
   xit('Running with nothing should show command usage', function(done) {
