@@ -5,7 +5,7 @@
 mochatron makes integration testing with [mocha](https://mochajs.org/) and [electron](http://electron.atom.io/) easy.
 
 Features:
-- Run tests in [electron](http://electron.atom.io/) (fast & modern!) rather than [phantomJS](http://phantomjs.org/) (old & buggy).
+- Run tests in [electron](http://electron.atom.io/) (fast & modern!) rather than [phantomJS](http://phantomjs.org/).
 - Ability to see test output in node AND the electron window console.
 - Option to silently fail on errors so that tests can be run in development with file watching and not stop on an error.
 - Option to show the electron window for easier debugging or hide it and run mocha tests headlessly.
