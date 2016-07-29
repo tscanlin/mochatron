@@ -66,7 +66,9 @@ app.on('ready', function() {
   }
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  if (config.window) {
+    mainWindow.webContents.openDevTools();
+  }
 
   // Timeout here so the DevTools has enough time to load and record the first request.
   setTimeout(function(){
