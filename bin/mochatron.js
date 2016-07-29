@@ -11,11 +11,8 @@ var appScript = path.join(__dirname, '/app.js');
 var args = process.argv.slice(2);
 
 function main(conf) {
-  var keys = Object.keys(defaultConfig);
   var config = {};
-  keys.forEach(function(key) {
-    config[key] = conf[key] || defaultConfig[key];
-  });
+  Object.assign(config, defaultConfig, conf);
 
   // Resolve to a file URL if its not http*.
   var urlArg = conf.args ? conf.args[0] : conf.url;
