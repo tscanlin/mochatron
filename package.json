@@ -2,12 +2,10 @@
   "name": "mochatron",
   "version": "1.0.7",
   "description": "mocha testing in electron",
-  "main": "bin/mochatron.js",
-  "bin": {
-    "mochatron": "./bin/mochatron.js"
-  },
+  "main": "lib/index.js",
+  "bin": "lib/cli.js",
   "scripts": {
-    "start": "node bin/mochatron-cli.js",
+    "start": "node lib/index.js",
     "test": "node test/index.js"
   },
   "repository": {
