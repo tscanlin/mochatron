@@ -109,6 +109,10 @@ program
 node .\node_modules\mochatron -w -s http://localhost/
 ```
 
+## Debug
+
+Use `DEBUG=mochatron` to debug with [debug](https://www.npmjs.com/package/debug).
+
 ## Roadmap
 
 - Tests
