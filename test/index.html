@@ -23,9 +23,8 @@
       setTimeout(function() {
         if (window.initMochatron) {
           window.initMochatron();
-        } else {
-          mocha.run();
         }
+        mocha.run();
       }, 500)
     </script>
   </body>
