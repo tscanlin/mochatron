@@ -12,7 +12,6 @@ var testDir = 'test'
 // Add each .js file to the mocha instance
 fs.readdirSync(testDir).filter(function(file){
   // Only keep the .js files
-  console.log(file);
   return file.substr(-3) === '.js' && file !== 'index.js';
 
 }).forEach(function(file){

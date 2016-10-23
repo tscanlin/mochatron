@@ -1,9 +1,8 @@
 // (chai && chai.expect) ||
 var expect = require('chai').expect;
-var Mochatron = require('../bin/mochatron.js');
+var Mochatron = require('../lib/index.js');
 var fs = require('fs');
 var path = require('path');
-var fileUrl = require('file-url');
 var cwd = process.cwd();
 var mochatron;
 
@@ -18,7 +17,6 @@ function run(conf) {
     var stdout = '';
     var stderr = '';
     mochatron = Mochatron(conf);
-    console.log('run')
 
     mochatron.stdout.on('data', function(data) {
       stdout = stdout.concat(data.toString());
@@ -27,7 +25,6 @@ function run(conf) {
       stderr = stderr.concat(data.toString());
     })
     mochatron.once('close', function(code) {
-      console.log('close')
       resolve({
         code: code,
         stdout: stdout,
@@ -35,7 +32,6 @@ function run(conf) {
       });
     })
     mochatron.once('exit', function(code) {
-      console.log('exit')
       mochatron.kill();
       resolve({
         code: code,
@@ -62,7 +58,7 @@ describe('mochatron tests', function() {
       // expect(result.code).to.equal(1);
       expect(result.stdout).to.contain('Usage: mochatron-cli [options] <url>');
       done();
-    }).catch(function(e) { console.log(e) });
+    }).catch(done);
   });
 
   xit('Running with --help should show command usage', function(done) {
@@ -70,7 +66,7 @@ describe('mochatron tests', function() {
       // expect(result.code).to.equal(1);
       expect(result.stdout).to.contain('Usage: mochatron-cli [options] <url>');
       done();
-    }).catch(function(e) { console.log(e) });
+    }).catch(done);
   });
 
   it('Running with a url should run the tests for that page', function(done) {
@@ -78,7 +74,6 @@ describe('mochatron tests', function() {
       quit: true,
       url: 'test/index.html'
     }).then(function(result) {
-      console.log(result)
       // expect(result.code).to.not.be.above(0);
       expect(result.stdout).to.contain('Basic HTML Tests');
       expect(result.stdout).to.contain('Test H1');
@@ -86,7 +81,7 @@ describe('mochatron tests', function() {
       expect(result.stdout).to.contain('should not contain "It"');
       expect(result.stdout).to.contain('2 passing');
       done();
-    }).catch(function(e) { console.log(e) });
+    }).catch(done);
   });
 
   it('Running with --hooks should run hooks in the specified file before and after the test', function(done) {
@@ -95,7 +90,6 @@ describe('mochatron tests', function() {
       hooks: 'test/util/hooks.js',
       url: 'test/index.html'
     }).then(function(result) {
-      console.log(result)
       // expect(result.code).to.not.be.above(0);
       expect(result.stdout).to.contain('Before start called correctly!');
       expect(result.stdout).to.contain('Basic HTML Tests');
@@ -105,7 +99,7 @@ describe('mochatron tests', function() {
       expect(result.stdout).to.contain('2 passing');
       expect(result.stdout).to.contain('After end called correctly!');
       done();
-    }).catch(function(e) { console.log(e) });
+    }).catch(done);
   });
 
   it('Running with --reporter should let users change the reporter to use', function(done) {
@@ -117,7 +111,7 @@ describe('mochatron tests', function() {
       // expect(result.code).to.not.be.above(0);
       expect(result.stdout).to.contain('2 passing');
       done();
-    }).catch(function(e) { console.log(e) });
+    }).catch(done);
   });
 
   xit('Running with --file should dump test results to a file', function(done) {
@@ -146,7 +140,7 @@ describe('mochatron tests', function() {
       expect(result.stdout).to.not.contain('should contain');
       expect(result.stdout).to.contain('1 passing');
       done();
-    }).catch(function(e) { console.log(e) });
+    }).catch(done);
   });
 
   it('Running with --grep and --invert should selectively run tests that DO NOT match the grep pattern', function(done) {
@@ -161,20 +155,7 @@ describe('mochatron tests', function() {
       expect(result.stdout).to.not.contain('should not contain "It"');
       expect(result.stdout).to.contain('1 passing');
       done();
-    }).catch(function(e) { console.log(e) });
-  });
-
-  it('Running with --debug should show helpful debugging info', function(done) {
-    run({
-      quit: true,
-      debug: true,
-      url: 'test/index.html'
-    }).then(function(result) {
-      // expect(result.code).to.not.be.above(0);
-      expect(result.stdout).to.contain('Config: {"url":');
-      expect(result.stdout).to.contain('2 passing');
-      done();
-    }).catch(function(e) { console.log(e) });
+    }).catch(done);
   });
 
 
