@@ -1,4 +1,4 @@
-# mochatron
+# mochatron (no longer maintained)
 
 ## Introduction
 
